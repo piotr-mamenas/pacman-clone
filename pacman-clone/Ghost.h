@@ -1,7 +1,9 @@
 #ifndef GHOST_H
 #define GHOST_H
 
-class Ghost
+#include "GameObject.h"
+
+class Ghost : public GameObject
 {
 };
 

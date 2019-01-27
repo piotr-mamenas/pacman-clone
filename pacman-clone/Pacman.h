@@ -1,7 +1,9 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 
-class Pacman
+#include "GameObject.h"
+
+class Pacman : public GameObject
 {
 };
 
