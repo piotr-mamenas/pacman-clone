@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+#include "SDL2/SDL.h"
 #include "GameContext.h"
 
 const std::string GAME_NAME = "";
@@ -19,6 +20,7 @@ GameContext::GameContext(int screenWidth, int screenHeight, bool isWindowMode)
 bool GameContext::init() 
 {
     bool success = true;
+
 
     return success;
 }
