@@ -47,7 +47,7 @@
     <ClInclude Include="GameContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDLAdapter.h">
+    <ClInclude Include="SDL2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

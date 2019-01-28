@@ -127,7 +127,7 @@
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Pacman.h" />
-    <ClInclude Include="SDLAdapter.h" />
+    <ClInclude Include="SDL2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
