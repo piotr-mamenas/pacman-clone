@@ -25,7 +25,7 @@ struct shared_ptr_with_deleter : public std::shared_ptr<T>
     }
 };
 
-namespace SDL2
+namespace SDL2Memory
 {
     using SurfaceSharedPtr = shared_ptr_with_deleter<SDL_Surface, SDL_Deleter>;
     using TextureSharedPtr = shared_ptr_with_deleter<SDL_Texture, SDL_Deleter>;
