@@ -29,7 +29,7 @@ bool GameContext::init()
     else 
     {
         SDL_WindowFlags windowFlag;
-        if (this->isWindowMode)
+        if (isWindowMode)
         {
             windowFlag = SDL_WINDOW_SHOWN;
         }
@@ -37,7 +37,14 @@ bool GameContext::init()
         {
             windowFlag = SDL_WINDOW_FULLSCREEN;
         }
-        _gameWindow = SDL2Memory::WindowSharedPtr(SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->screenWidth, this->screenHeight, windowFlag));
+        gameWindow = SDL2Memory::WindowSharedPtr(SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->screenWidth, this->screenHeight, windowFlag));
+        gameRenderer = SDL2Memory::RendererSharedPtr(SDL_CreateRenderer(gameWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+        
+        if (gameRenderer == NULL)
+        {
+            std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError();
+            success = false;
+        }
     }
 
     return success;
@@ -45,4 +52,17 @@ bool GameContext::init()
 
 void GameContext::close()
 {
+}
+
+void GameContext::_refreshScene()
+{
+    _clearScreen();
+
+}
+
+void GameContext::_clearScreen()
+{
+    SDL_SetRenderDrawColor(gameRenderer.get(), 0, 0, 0, 250);
+    SDL_SetRenderTarget(gameRenderer.get(), 0);
+    SDL_RenderClear(gameRenderer.get());
 }

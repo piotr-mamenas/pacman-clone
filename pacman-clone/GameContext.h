@@ -5,8 +5,12 @@
 
 class GameContext
 {
+private:
+    void _refreshScene();
+    void _clearScreen();
 protected:
-    SDL2Memory::WindowSharedPtr _gameWindow;
+    SDL2Memory::WindowSharedPtr gameWindow;
+    SDL2Memory::RendererSharedPtr gameRenderer;
 
     int screenWidth;
     int screenHeight;
