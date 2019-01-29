@@ -1,10 +1,54 @@
 #include <string>
+#include <map>
+#include <iostream>
+#include <fstream>
 
 #include "GameAssetManager.h"
 #include "SDL2Memory.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+GameAssetManager::GameAssetManager(SDL2Memory::RendererSharedPtr gameRenderer)
+{
+    _renderer = gameRenderer;
+    _loadGameResources();
+}
+
+std::map<int, SDL2Memory::TextureSharedPtr> GameAssetManager::_loadGameResources()
+{
+    int spriteId;
+    std::string path;
+    std::map<int, SDL2Memory::TextureSharedPtr> textureMap;
+
+    try
+    {
+        std::ifstream spriteFile("sprites.json");
+        json sprites;
+        spriteFile >> sprites;
+
+        for (auto& sprite : sprites.at("sprites"))
+        {
+            spriteId = sprite.at("id").get<int>();
+            path = sprite.at("spriteSheetImage").get<std::string>();
+            
+            SDL2Memory::TextureSharedPtr texture = SDL2Memory::TextureSharedPtr(_loadTexture(path));
+            textureMap.insert(std::pair<int, SDL2Memory::TextureSharedPtr>(spriteId, texture));
+        }
+        return textureMap;
+    }
+    catch (json::parse_error& e)
+    {
+        std::cout << "message: " << e.what() << '\n'
+            << "exception id: " << e.id << '\n'
+            << "byte position of error: " << e.byte << std::endl;
+
+        return textureMap;
+    }
+}
 
 SDL2Memory::TextureSharedPtr GameAssetManager::_loadTexture(std::string path)
 {

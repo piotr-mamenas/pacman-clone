@@ -1,0 +1,10 @@
+{
+    "sprites": [
+        {
+            "id": 1,
+            "width": 16,
+            "height": 16,
+            "spriteSheetImage": "pacmon.png"
+        }
+    ]
+}

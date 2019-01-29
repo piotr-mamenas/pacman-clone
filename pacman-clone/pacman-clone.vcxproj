@@ -132,6 +132,7 @@
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="sprites.json" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="SDL2Memory.h" />
   </ItemGroup>
