@@ -2,6 +2,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 #include "GameAssetManager.h"
 #include "SDL2Memory.h"
@@ -15,14 +16,24 @@ using json = nlohmann::json;
 GameAssetManager::GameAssetManager(SDL2Memory::RendererSharedPtr gameRenderer)
 {
     _renderer = gameRenderer;
-    _loadGameResources();
+    _loadGameTextures();
 }
 
-std::map<int, SDL2Memory::TextureSharedPtr> GameAssetManager::_loadGameResources()
+SDL_Texture* GameAssetManager::getTexture(int id)
+{
+    std::map<int, SDL_Texture*>::iterator textureIterator = _textures.find(id);
+    if (textureIterator != _textures.end())
+    {
+        return textureIterator->second;
+    }
+    throw std::runtime_error("Could not find texture id: " + id);
+}
+
+std::map<int, SDL_Texture*> GameAssetManager::_loadGameTextures()
 {
     int spriteId;
     std::string path;
-    std::map<int, SDL2Memory::TextureSharedPtr> textureMap;
+    std::map<int, SDL_Texture*> textureMap;
 
     try
     {
@@ -35,8 +46,8 @@ std::map<int, SDL2Memory::TextureSharedPtr> GameAssetManager::_loadGameResources
             spriteId = sprite.at("id").get<int>();
             path = sprite.at("spriteSheetImage").get<std::string>();
             
-            SDL2Memory::TextureSharedPtr texture = SDL2Memory::TextureSharedPtr(_loadTexture(path));
-            textureMap.insert(std::pair<int, SDL2Memory::TextureSharedPtr>(spriteId, texture));
+            SDL_Texture* texture = _loadTexture(path);
+            textureMap.insert(std::pair<int, SDL_Texture*>(spriteId, texture));
         }
         return textureMap;
     }
@@ -50,9 +61,9 @@ std::map<int, SDL2Memory::TextureSharedPtr> GameAssetManager::_loadGameResources
     }
 }
 
-SDL2Memory::TextureSharedPtr GameAssetManager::_loadTexture(std::string path)
+SDL_Texture* GameAssetManager::_loadTexture(std::string path)
 {
-    SDL2Memory::TextureSharedPtr loadedTexture;
+    SDL_Texture* loadedTexture = nullptr;
 
     SDL2Memory::SurfaceSharedPtr loadedSurface = SDL2Memory::SurfaceSharedPtr(IMG_Load(path.c_str()));
     if (loadedSurface == NULL)
@@ -62,10 +73,11 @@ SDL2Memory::TextureSharedPtr GameAssetManager::_loadTexture(std::string path)
     else
     {
         SDL_SetColorKey(loadedSurface.get(), SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0));
-        loadedTexture = SDL2Memory::TextureSharedPtr(SDL_CreateTextureFromSurface(_renderer.get(), loadedSurface.get()));
+        loadedTexture = SDL_CreateTextureFromSurface(_renderer.get(), loadedSurface.get());
         if (loadedTexture == NULL)
         {
-            printf("Unable to create texture %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+            auto errorMessage = ("Unable to create texture " + path ) + "! SDL Error: " + SDL_GetError();
+            throw std::runtime_error(errorMessage);
         }
     }
     return loadedTexture;

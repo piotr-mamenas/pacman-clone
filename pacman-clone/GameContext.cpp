@@ -39,12 +39,17 @@ bool GameContext::init()
         }
         gameWindow = SDL2Memory::WindowSharedPtr(SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->screenWidth, this->screenHeight, windowFlag));
         gameRenderer = SDL2Memory::RendererSharedPtr(SDL_CreateRenderer(gameWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-        
+
         if (gameRenderer == NULL)
         {
             std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError();
             success = false;
         }
+
+        gameAssetManager = std::make_shared<GameAssetManager*>(new GameAssetManager(gameRenderer));
+
+        SDL_Texture* texture = gameAssetManager.get()->getTexture(1);
+        SDL_RenderCopy(gameRenderer.get(), texture, NULL, NULL);
     }
 
     return success;
@@ -57,7 +62,6 @@ void GameContext::close()
 void GameContext::_refreshScene()
 {
     _clearScreen();
-
 }
 
 void GameContext::_clearScreen()

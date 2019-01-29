@@ -1,6 +1,9 @@
 #ifndef GAMECONTEXT_H
 #define GAMECONTEXT_H
 
+#include <memory>
+
+#include "GameAssetManager.h"
 #include "SDL2Memory.h"
 
 class GameContext
@@ -11,6 +14,7 @@ private:
 protected:
     SDL2Memory::WindowSharedPtr gameWindow;
     SDL2Memory::RendererSharedPtr gameRenderer;
+    std::shared_ptr<GameAssetManager*> gameAssetManager;
 
     int screenWidth;
     int screenHeight;
