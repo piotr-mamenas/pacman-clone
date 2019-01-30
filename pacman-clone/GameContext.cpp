@@ -46,9 +46,7 @@ bool GameContext::init()
             success = false;
         }
 
-        auto assetManager = new GameAssetManager(gameRenderer);
-        gameAssetManager = std::make_shared<GameAssetManager>(assetManager);
-        delete assetManager;
+        gameAssetManager = std::make_shared<GameAssetManager>(gameRenderer);
 
         SDL_Texture* texture = gameAssetManager->getTexture(1);
         SDL_RenderCopy(gameRenderer.get(), texture, NULL, NULL);
