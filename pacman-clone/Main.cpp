@@ -1,4 +1,6 @@
 #include <memory>
+#include <stdexcept>
+
 #include "GameContext.h"
 
 #ifdef main
@@ -13,7 +15,7 @@ int main(int argc, char* argv[])
     bool isGameInitialized = context->init();
     if (!isGameInitialized)
     {
-        printf("Failed to initialize Game Engine!\n");
+        throw std::runtime_error("Failed to initialize Game Engine!\n");
     }
     context->close();
     return 0;
