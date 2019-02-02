@@ -14,9 +14,9 @@ const unsigned int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
 GameContext::GameContext(int screenWidth, int screenHeight, bool isWindowMode) 
 {
-    this->screenWidth = screenWidth;
-    this->screenHeight = screenHeight;
-    this->isWindowMode = isWindowMode;
+    _screenWidth = screenWidth;
+    _screenHeight = screenHeight;
+    _isWindowMode = isWindowMode;
 }
 
 bool GameContext::init() 
@@ -30,7 +30,7 @@ bool GameContext::init()
     else 
     {
         SDL_WindowFlags windowFlag;
-        if (isWindowMode)
+        if (_isWindowMode)
         {
             windowFlag = SDL_WINDOW_SHOWN;
         }
@@ -38,16 +38,16 @@ bool GameContext::init()
         {
             windowFlag = SDL_WINDOW_FULLSCREEN;
         }
-        gameWindow = SDL2Memory::WindowSharedPtr(SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->screenWidth, this->screenHeight, windowFlag));
-        gameRenderer = SDL2Memory::RendererSharedPtr(SDL_CreateRenderer(gameWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+        _gameWindow = SDL2Memory::WindowSharedPtr(SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, windowFlag));
+        _gameRenderer = SDL2Memory::RendererSharedPtr(SDL_CreateRenderer(_gameWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 
-        if (gameRenderer == NULL)
+        if (_gameRenderer == NULL)
         {
             std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError();
             success = false;
         }
 
-        gameAssetManager = std::make_shared<GameAssetManager>(gameRenderer);
+        _gameAssetManager = std::make_shared<GameAssetManager>(_gameRenderer);
 
         SDL_Event e;
         bool quit = false;
@@ -69,8 +69,8 @@ bool GameContext::init()
                 //_currentPlayer->handleInteraction(e, units);
             }
 
-            SDL_Texture* texture = gameAssetManager->getTexture(1);
-            SDL_RenderCopy(gameRenderer.get(), texture, NULL, NULL);
+            SDL_Texture* texture = _gameAssetManager->getTexture(1);
+            SDL_RenderCopy(_gameRenderer.get(), texture, NULL, NULL);
             _refreshScene();
 
             int frameTicks = capTimer.getTicks();
@@ -97,9 +97,9 @@ void GameContext::_refreshScene()
 
 void GameContext::_clearScreen()
 {
-    SDL_SetRenderDrawColor(gameRenderer.get(), 0, 0, 0, 0);
-    SDL_SetRenderTarget(gameRenderer.get(), 0);
-    SDL_RenderClear(gameRenderer.get());
+    SDL_SetRenderDrawColor(_gameRenderer.get(), 0, 0, 0, 0);
+    SDL_SetRenderTarget(_gameRenderer.get(), 0);
+    SDL_RenderClear(_gameRenderer.get());
 
-    SDL_RenderPresent(gameRenderer.get());
+    SDL_RenderPresent(_gameRenderer.get());
 }
