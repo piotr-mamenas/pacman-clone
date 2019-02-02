@@ -5,6 +5,7 @@
 
 #include "SDL2/SDL.h"
 #include "GameContext.h"
+#include "GameTimer.h"
 #include "SDL2Memory.h"
 
 const char* GAME_NAME = "";
@@ -48,8 +49,38 @@ bool GameContext::init()
 
         gameAssetManager = std::make_shared<GameAssetManager>(gameRenderer);
 
-        SDL_Texture* texture = gameAssetManager->getTexture(1);
-        SDL_RenderCopy(gameRenderer.get(), texture, NULL, NULL);
+        SDL_Event e;
+        bool quit = false;
+
+        GameTimer fpsTimer;
+        GameTimer capTimer;
+        int countedFrames = 0;
+        fpsTimer.start();
+
+        while (!quit)
+        {
+            capTimer.start();
+            while (SDL_PollEvent(&e))
+            {
+                if (e.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+                //_currentPlayer->handleInteraction(e, units);
+            }
+
+            SDL_Texture* texture = gameAssetManager->getTexture(1);
+            SDL_RenderCopy(gameRenderer.get(), texture, NULL, NULL);
+            _refreshScene();
+
+            int frameTicks = capTimer.getTicks();
+            if (frameTicks < SCREEN_TICKS_PER_FRAME)
+            {
+                // Capped at 20 atm, but VSync is active so can be turned off if necessary
+                SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+            }
+        }
+
     }
 
     return success;
@@ -66,7 +97,9 @@ void GameContext::_refreshScene()
 
 void GameContext::_clearScreen()
 {
-    SDL_SetRenderDrawColor(gameRenderer.get(), 0, 0, 0, 250);
+    SDL_SetRenderDrawColor(gameRenderer.get(), 0, 0, 0, 0);
     SDL_SetRenderTarget(gameRenderer.get(), 0);
     SDL_RenderClear(gameRenderer.get());
+
+    SDL_RenderPresent(gameRenderer.get());
 }

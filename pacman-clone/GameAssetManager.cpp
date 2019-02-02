@@ -16,7 +16,7 @@ using json = nlohmann::json;
 GameAssetManager::GameAssetManager(SDL2Memory::RendererSharedPtr gameRenderer)
 {
     _renderer = gameRenderer;
-    _loadGameTextures();
+    _textures = _loadGameTextures();
 }
 
 SDL_Texture* GameAssetManager::getTexture(int id)
@@ -44,7 +44,7 @@ std::map<int, SDL_Texture*> GameAssetManager::_loadGameTextures()
         for (auto& sprite : sprites.at("sprites"))
         {
             spriteId = sprite.at("id").get<int>();
-            path = sprite.at("spriteSheetImage").get<std::string>();
+            path = sprite.at("image").get<std::string>();
             
             SDL_Texture* texture = _loadTexture(path);
             textureMap.insert(std::pair<int, SDL_Texture*>(spriteId, texture));
