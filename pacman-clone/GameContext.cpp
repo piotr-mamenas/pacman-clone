@@ -6,6 +6,7 @@
 #include "SDL2/SDL.h"
 #include "GameContext.h"
 #include "GameTimer.h"
+#include "Pacman.h"
 #include "SDL2Memory.h"
 
 const char* GAME_NAME = "";
@@ -69,8 +70,6 @@ bool GameContext::init()
                 //_currentPlayer->handleInteraction(e, units);
             }
 
-            SDL_Texture* texture = _gameAssetManager->getTexture(1);
-            SDL_RenderCopy(_gameRenderer.get(), texture, NULL, NULL);
             _refreshScene();
 
             int frameTicks = capTimer.getTicks();
@@ -93,6 +92,11 @@ void GameContext::close()
 void GameContext::_refreshScene()
 {
     _clearScreen();
+    
+    auto pacman = std::make_shared<Pacman>(0, 0, _gameAssetManager.get());
+    pacman->render(_gameAssetManager.get(), _gameRenderer);
+
+    SDL_RenderPresent(_gameRenderer.get());
 }
 
 void GameContext::_clearScreen()
@@ -100,6 +104,4 @@ void GameContext::_clearScreen()
     SDL_SetRenderDrawColor(_gameRenderer.get(), 0, 0, 0, 0);
     SDL_SetRenderTarget(_gameRenderer.get(), 0);
     SDL_RenderClear(_gameRenderer.get());
-
-    SDL_RenderPresent(_gameRenderer.get());
 }

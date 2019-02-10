@@ -5,6 +5,8 @@
 
 class Pacman : public GameObject
 {
+public:
+    Pacman(int posX, int posY, GameAssetManager* assetManager);
 };
 
 #endif

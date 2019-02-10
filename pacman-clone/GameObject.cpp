@@ -9,6 +9,9 @@ GameObject::GameObject(int posX, int posY, int width, int height, int spriteId, 
     this->width = width;
     this->height = height;
     this->spriteId = spriteId;
+    this->posX = posX;
+    this->posY = posY;
+    _stateId = 1;
 
     SDL_Texture* texture = assetManager->getTexture(spriteId);
     int clipCounter = 0;
@@ -55,7 +58,7 @@ SDL_Rect GameObject::_getClip(int clipId)
 
 SDL_Rect GameObject::_getClipByCurrentState()
 {
-    int clipId;
+    int clipId = 0;
     std::map<int, int>::iterator mappingIteractor = stateClipMapping.find(_stateId);
     if (mappingIteractor != stateClipMapping.end())
     {
@@ -67,6 +70,7 @@ SDL_Rect GameObject::_getClipByCurrentState()
 void GameObject::render(GameAssetManager* gameAssetManager, SDL2Memory::RendererSharedPtr renderer)
 {
     SDL_Rect currentClip = _getClipByCurrentState();
+
     SDL_Rect currentPosition;
     currentPosition.x = posX;
     currentPosition.y = posY;
